@@ -143,6 +143,8 @@ namespace SuccessStory
 
         public bool EnableRetroAchievements { get; set; } = false;
         public bool EnableRpcs3Achievements { get; set; } = false;
+		public string Rpcs3InstallationFolder { get; set; } = string.Empty;
+		public List<Folder> Rpcs3InstallationFolders { get; set; } = new List<Folder>();
 
 		public bool EnableShadPS4Achievements { get; set; } = false;
 		public string ShadPS4InstallationFolder { get; set; } = string.Empty;
@@ -158,9 +160,6 @@ namespace SuccessStory
         private List<CbData> wowRealms = new List<CbData>();
         public List<CbData> WowRealms { get => wowRealms; set => SetValue(ref wowRealms, value); }
         public string WowCharacter { get; set; } = string.Empty;
-
-        public string Rpcs3InstallationFolder { get; set; } = string.Empty;
-        public List<Folder> Rpcs3InstallationFolders { get; set; } = new List<Folder>();
 
         public bool EnableRetroAchievementsView { get; set; } = false;
         public bool EnableOneGameView { get; set; } = true;

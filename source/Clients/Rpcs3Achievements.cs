@@ -142,7 +142,6 @@ namespace SuccessStory.Clients
 
                     foreach (string hexData in trophyHexData)
                     {
-
                         if (hexData.Length < 58)
                         {
                             continue;
