@@ -140,9 +140,15 @@ namespace SuccessStory
         public bool EnableEpic { get; set; } = false;
         public bool EnableOrigin { get; set; } = false;
         public bool EnableXbox { get; set; } = false;
+
         public bool EnableRetroAchievements { get; set; } = false;
         public bool EnableRpcs3Achievements { get; set; } = false;
-        public bool EnableGameJolt { get; set; } = false;
+
+		public bool EnableShadPS4Achievements { get; set; } = false;
+		public string ShadPS4InstallationFolder { get; set; } = string.Empty;
+		public List<Folder> ShadPS4InstallationFolders { get; set; } = new List<Folder>();
+
+		public bool EnableGameJolt { get; set; } = false;
 
         public bool EnableOverwatchAchievements { get; set; } = false;
         public bool EnableSc2Achievements { get; set; } = false;

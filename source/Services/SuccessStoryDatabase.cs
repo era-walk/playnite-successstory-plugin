@@ -61,6 +61,7 @@ namespace SuccessStory.Services
                         TryAddProvider(AchievementSource.Playstation, () => new PSNAchievements());
                         TryAddProvider(AchievementSource.RetroAchievements, () => new RetroAchievements());
                         TryAddProvider(AchievementSource.RPCS3, () => new Rpcs3Achievements());
+                        TryAddProvider(AchievementSource.ShadPS4, () => new ShadPS4Achievements());
                         TryAddProvider(AchievementSource.Starcraft2, () => new Starcraft2Achievements());
                         TryAddProvider(AchievementSource.Steam, () => new SteamAchievements());
                         TryAddProvider(AchievementSource.Xbox, () => new XboxAchievements());
@@ -472,8 +473,9 @@ namespace SuccessStory.Services
             GameJolt,
             WutheringWaves,
             HonkaiStarRail,
-            ZenlessZoneZero
-        }
+            ZenlessZoneZero,
+			ShadPS4
+		}
 
         private static AchievementSource GetAchievementSourceFromLibraryPlugin(SuccessStorySettings settings, Game game)
         {
@@ -618,8 +620,12 @@ namespace SuccessStory.Services
 
         private static AchievementSource GetAchievementSourceFromEmulator(SuccessStorySettings settings, Game game)
         {
-            // Priority 1: Check for RPCS3
-            if (settings.EnableRpcs3Achievements && PlayniteTools.GameUseRpcs3(game))
+			// Priority 1: Check for RPCS3 or ShadPS4
+			if (settings.EnableRpcs3Achievements && PlayniteTools.GameUseRpcs3(game))
+            {
+                return AchievementSource.RPCS3;
+            }
+			if (settings.EnableShadPS4Achievements && PlayniteTools.GameUseShadPS4(game))
             {
                 return AchievementSource.RPCS3;
             }

@@ -141,7 +141,9 @@ namespace SuccessStory.Models
         /// </summary>
         public string CategoryRpcs3 { get; set; } = string.Empty;
 
-        private static string[] LocalResourceGames => new[]
+		public string CategoryShadPS4 { get; set; } = string.Empty;
+
+		private static string[] LocalResourceGames => new[]
         {
             "rpcs3", "hidden_trophy", "GenshinImpact", "WutheringWaves", "HonkaiStarRail", "ZenlessZoneZero", "default_icon"
         };
@@ -159,8 +161,13 @@ namespace SuccessStory.Models
                 {
                     tempUrlUnlocked = Path.Combine(PluginDatabase.Paths.PluginUserDataPath, UrlUnlocked);
                     return tempUrlUnlocked;
-                }
-                if (LocalResourceGames.Any(game => tempUrlUnlocked?.Contains(game, StringComparison.InvariantCultureIgnoreCase) == true))
+				}
+				if (tempUrlUnlocked?.Contains("shadps4", StringComparison.InvariantCultureIgnoreCase) ?? false)
+				{
+					tempUrlUnlocked = Path.Combine(PluginDatabase.Paths.PluginUserDataPath, UrlUnlocked);
+					return tempUrlUnlocked;
+				}
+				if (LocalResourceGames.Any(game => tempUrlUnlocked?.Contains(game, StringComparison.InvariantCultureIgnoreCase) == true))
                 {
                     tempUrlUnlocked = Path.Combine(PluginDatabase.Paths.PluginPath, "Resources", UrlUnlocked);
                     return tempUrlUnlocked;
