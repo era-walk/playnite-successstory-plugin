@@ -1044,31 +1044,94 @@ namespace SuccessStory
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            // StoreAPI Initialization
-            Task.Run(() =>
-            {
-                Logger.Info("ExophaseAchievements Initialization");
-                ExophaseAchievements = new ExophaseAchievements();
+			// StoreAPI Initialization
+			Task.Run(async () =>
+			{
+				var tasks = new[]
+				{
+		            Task.Run(() =>
+		            {
+			            try
+			            {
+				            Logger.Info("ExophaseAchievements Initialization");
+				            ExophaseAchievements = new ExophaseAchievements();
+			            }
+			            catch (Exception ex)
+			            {
+				            Logger.Error(ex, "Error initializing ExophaseAchievements");
+			            }
+		            }),
+		            Task.Run(() =>
+		            {
+			            try
+			            {
+				            Logger.Info("SteamApi Initialization");
+				            SteamApi = new SteamApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
+				            SteamApi.Initialization(
+					            PluginDatabase.PluginSettings.Settings.SteamStoreSettings,
+					            PluginDatabase.PluginSettings.Settings.PluginState.SteamIsEnabled && PluginDatabase.PluginSettings.Settings.EnableSteam
+				            );
+			            }
+			            catch (Exception ex)
+			            {
+				            Logger.Error(ex, "Error initializing SteamApi");
+			            }
+		            }),
+		            Task.Run(() =>
+		            {
+			            try
+			            {
+				            Logger.Info("EpicApi Initialization");
+				            EpicApi = new EpicApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
+				            EpicApi.Initialization(
+					            PluginDatabase.PluginSettings.Settings.EpicStoreSettings,
+					            PluginDatabase.PluginSettings.Settings.PluginState.EpicIsEnabled && PluginDatabase.PluginSettings.Settings.EnableEpic
+				            );
+			            }
+			            catch (Exception ex)
+			            {
+				            Logger.Error(ex, "Error initializing EpicApi");
+			            }
+		            }),
+		            Task.Run(() =>
+		            {
+			            try
+			            {
+				            Logger.Info("GogApi Initialization");
+				            GogApi = new GogApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
+				            GogApi.Initialization(
+					            PluginDatabase.PluginSettings.Settings.GogStoreSettings,
+					            PluginDatabase.PluginSettings.Settings.PluginState.GogIsEnabled && PluginDatabase.PluginSettings.Settings.EnableGog
+				            );
+			            }
+			            catch (Exception ex)
+			            {
+				            Logger.Error(ex, "Error initializing GogApi");
+			            }
+		            }),
+		            Task.Run(() =>
+		            {
+			            try
+			            {
+				            Logger.Info("GameJoltApi Initialization");
+				            GameJoltApi = new GameJoltApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
+				            GameJoltApi.Initialization(
+					            PluginDatabase.PluginSettings.Settings.GameJoltStoreSettings,
+					            PluginDatabase.PluginSettings.Settings.PluginState.GameJoltIsEnabled && PluginDatabase.PluginSettings.Settings.EnableGameJolt
+				            );
+			            }
+			            catch (Exception ex)
+			            {
+				            Logger.Error(ex, "Error initializing GameJoltApi");
+			            }
+		            })
+	            };
 
+				await Task.WhenAll(tasks);
+				Logger.Info("All API initializations completed");
+			});
 
-                Logger.Info("SteamApi Initialization");
-                SteamApi = new SteamApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
-                SteamApi.Initialization(PluginDatabase.PluginSettings.Settings.SteamStoreSettings, PluginDatabase.PluginSettings.Settings.PluginState.SteamIsEnabled && PluginDatabase.PluginSettings.Settings.EnableSteam);
-
-                Logger.Info("EpicApi Initialization");
-                EpicApi = new EpicApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
-                EpicApi.Initialization(PluginDatabase.PluginSettings.Settings.EpicStoreSettings, PluginDatabase.PluginSettings.Settings.PluginState.EpicIsEnabled && PluginDatabase.PluginSettings.Settings.EnableEpic);
-
-                Logger.Info("GogApi Initialization");
-                GogApi = new GogApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
-                GogApi.Initialization(PluginDatabase.PluginSettings.Settings.GogStoreSettings, PluginDatabase.PluginSettings.Settings.PluginState.GogIsEnabled && PluginDatabase.PluginSettings.Settings.EnableGog);
-
-                Logger.Info("GameJoltApi Initialization");
-                GameJoltApi = new GameJoltApi(PluginDatabase.PluginName, PlayniteTools.ExternalPlugin.SuccessStory);
-                GameJoltApi.Initialization(PluginDatabase.PluginSettings.Settings.GameJoltStoreSettings, PluginDatabase.PluginSettings.Settings.PluginState.GameJoltIsEnabled && PluginDatabase.PluginSettings.Settings.EnableGameJolt);
-            });
-
-            Task.Run(() =>
+			Task.Run(() =>
             {
                 Thread.Sleep(10000);
                 PreventLibraryUpdatedOnStart = false;
