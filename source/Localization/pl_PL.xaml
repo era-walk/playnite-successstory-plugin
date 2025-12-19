@@ -48,7 +48,7 @@ Musisz sprawdzić &quot;{1}&quot; w ustawieniach wtyczki</sys:String>
 Associate the platform in the plugin settings</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsRpcs3BadConfig">Program RPCS3 nie został poprawnie skonfigurowany w ustawieniach</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsShadPS4BadConfig">ShadPS4 nie został poprawnie skonfigurowany w ustawieniach</sys:String>
-	<sys:String x:Key="LOCSuccessStoryNotificationsXbox360BadConfig">Osiągnięcia Xbox360 nie zostały poprawnie skonfigurowane w ustawieniach</sys:String>
+	<sys:String x:Key="LOCSuccessStoryNotificationsXbox360BadConfig">Xbox360 Achievements have not been correctly configured in settings</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsBattleNetDisabled">Battle.net jest włączony w SuccessStory, ale rozszerzenie biblioteki zostało wyłączone w Playnite</sys:String>
     <sys:String x:Key="LOCSuccessStoryNotificationsBattleNetNoAuthenticate">Użytkownik Battle.net nie jest uwierzytelniony</sys:String>
     <sys:String x:Key="LOCSuccessStoryNotificationsBattleNetNoAuthenticateOverwatch">Użytkownik Battle.net Overwatch nie jest uwierzytelniony</sys:String>
