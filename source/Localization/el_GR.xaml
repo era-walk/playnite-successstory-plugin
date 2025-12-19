@@ -48,7 +48,7 @@
 Associate the platform in the plugin settings</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsRpcs3BadConfig">Το RPCS3 δεν έχει ρυθμιστεί σωστά στις ρυθμίσεις</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsShadPS4BadConfig">ShadPS4 has not been correctly configured in settings</sys:String>
-	<sys:String x:Key="LOCSuccessStoryNotificationsXbox360BadConfig">Xbox350 Achievements have not been correctly configured in settings</sys:String>
+	<sys:String x:Key="LOCSuccessStoryNotificationsXbox360BadConfig">Xbox360 Achievements have not been correctly configured in settings</sys:String>
 	<sys:String x:Key="LOCSuccessStoryNotificationsBattleNetDisabled">Το Battle.net είναι ενεργοποιημένο στο SuccessStory αλλά η επέκταση της βιβλιοθήκης έχει απενεργοποιηθεί στο Playnite</sys:String>
     <sys:String x:Key="LOCSuccessStoryNotificationsBattleNetNoAuthenticate">Ο χρήστης Battle.net δεν είναι ταυτοποιημένος</sys:String>
     <sys:String x:Key="LOCSuccessStoryNotificationsBattleNetNoAuthenticateOverwatch">Ο χρήστης Battle.net Overwatch δεν είναι ταυτοποιημένος</sys:String>
