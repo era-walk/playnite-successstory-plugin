@@ -373,9 +373,9 @@ namespace SuccessStory.Models
         /// Gets a value indicating whether the achievement is unlocked.
         /// </summary>
         [DontSerialize]
-        public bool IsUnlock => DateWhenUnlocked != null || EffectiveDateUnlocked.ToString().Contains("1982");
+		public bool IsUnlock => DateWhenUnlocked != null || EffectiveDateUnlocked?.Year == 1982;
 
-        private bool _isVisible = true;
+		private bool _isVisible = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the achievement is visible in the UI.
