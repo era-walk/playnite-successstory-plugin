@@ -83,7 +83,7 @@ Associe a plataforma nas configurações do plugin</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableSteam">Habilitar conquistas Steam</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableGog">Habilitar conquistas GOG</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableEpic">Habilitar conquistas Epic</sys:String>
-    <sys:String x:Key="LOCSuccessStoryEnableEa">Habilitar conquistas da EA</sys:String>
+    <sys:String x:Key="LOCSuccessStoryEnableEa">Habilitar conquistas EA</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableXbox">Habilitar conquistas Xbox</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableRetroAchievements">Habilitar conquistas RetroAchievements</sys:String>
 	<sys:String x:Key="LOCSuccessStoryEnableRpcs3Achievements">Habilitar conquistas RPCS3</sys:String>

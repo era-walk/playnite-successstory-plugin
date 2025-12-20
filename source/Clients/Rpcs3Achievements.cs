@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommonPluginsShared.Extensions;
 using Playnite.SDK;
@@ -73,7 +72,7 @@ namespace SuccessStory.Clients
 
                     string gameName = trophyDetailsXml.Descendants("title-name").FirstOrDefault().Value.Trim();
 
-                    // eFMann - Get all trophies, including those in groups                    
+                    // eFMann - Get all trophies, including those in groups
                     Dictionary<string, string> groupsDict = trophyDetailsXml.Descendants("group")
                         .ToDictionary(
                             g => g.Attribute("id")?.Value,
@@ -131,9 +130,7 @@ namespace SuccessStory.Clients
                         });
                     }
 
-
                     trophyCount = allAchievements.Count;
-
 
                     // Trophies data
                     byte[] trophyByte = File.ReadAllBytes(trophyFilePath);
@@ -142,15 +139,6 @@ namespace SuccessStory.Clients
                     trophyHexData = splitHex.Count >= trophyCount
                         ? splitHex.GetRange(splitHex.Count - trophyCount, trophyCount)
                         : new List<string>();
-
-
-                    /*
-                    if (trophyCount > 0 && splitHex.Count >= trophyCount)
-                    {
-                        // Take only the entries we need from the end of the list
-                        trophyHexData = splitHex.Skip(splitHex.Count - trophyCount).Take(trophyCount).ToList();
-                    } 
-                    */
 
                     foreach (string hexData in trophyHexData)
                     {
@@ -177,6 +165,11 @@ namespace SuccessStory.Clients
                                 string dtHex = hexData.Substring(44, 14);
                                 DateTime dt = new DateTime(long.Parse(dtHex, NumberStyles.AllowHexSpecifier) * 10L);
                                 allAchievements[id].DateUnlocked = dt;
+
+                                if (dt == DateTime.MinValue)
+                                {
+                                    dt = new DateTime(2000, 0, 0, 0, 0, 0);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -198,8 +191,8 @@ namespace SuccessStory.Clients
             return gameAchievements;
         }
 
-
         #region Configuration
+
         public override bool ValidateConfiguration()
         {
             if (CachedConfigurationValidationResult == null)
@@ -218,7 +211,6 @@ namespace SuccessStory.Clients
 
             return (bool)CachedConfigurationValidationResult;
         }
-
 
         public override bool IsConfigured()
         {
@@ -243,10 +235,11 @@ namespace SuccessStory.Clients
         {
             return PluginDatabase.PluginSettings.Settings.EnableRpcs3Achievements;
         }
+
         #endregion
 
-
         #region RPCS3
+
         private List<string> FindTrophyGameFolder(Game game)
         {
             List<string> trophyGameFolder = new List<string>();
@@ -282,7 +275,14 @@ namespace SuccessStory.Clients
 
             foldersPath.ForEach(x =>
             {
-                List<string> folders = Tools.FindFile(Paths.FixPathLength(x), "trophy", true);
+                List<string> folders = new List<string>();
+                string trophyPath = x + "\\trophy\\" + npcommid;
+                if (Directory.Exists(trophyPath))
+                {
+                    folders.Add(trophyPath);
+                    Logger.Warn($"Found TrophyPath: {trophyPath}");
+                }
+
                 if (folders.Count() == 0)
                 {
                     Logger.Warn($"Trophy folder not found: {x}");
@@ -357,6 +357,7 @@ namespace SuccessStory.Clients
                 return string.Empty;
             }
         }
+
         #endregion
     }
 }
