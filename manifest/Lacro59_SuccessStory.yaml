@@ -417,3 +417,19 @@ Packages:
       - 'Updated: Translations and localization for multiple languages, including new keys for added games and Game Jolt support'
       - 'Improved: Reliability of achievement providers with better error handling'
       - 'Fixed: Various minor errors and performance issues'
+  - Version: 3.7
+    RequiredApiVersion: 6.13.0
+    ReleaseDate: 2025-12-10
+    PackageUrl: https://github.com/Lacro59/playnite-successstory-plugin/releases/download/v3.7/playnite-successstory-plugin_3_7.pext
+    Changelog:
+      - 'Updated: Localization'
+      - 'Added: Support for Xbox 360 (Xenia) achievements (thanks to eFMann)'
+      - 'Added: Integration for ShadPS4 achievements (thanks to eFMann)'
+      - 'Added: Support for RetroAchievements hardcore unlocks with toggleable display and updated statistics'
+      - 'Updated: RPCS3 achievements (thanks to eFMann & philipjholm)'
+      - 'Updated: Steam, Epic and RetroAchievements for better stability '
+      - 'Fixed: Issues in achievement database logic and manual success story editing'
+      - 'Updated: Minor UI adjustments'
+      - 'Updated: EA achievements API'
+      - 'Fixed: Exophase achievements (thanks to SiriosDev)'
+      - 'Added: Support for XCloud'
