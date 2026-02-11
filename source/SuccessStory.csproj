@@ -632,7 +632,6 @@
     <Compile Include="Models\GenshinImpact\GenshinImpactAchievementsCategory.cs" />
     <Compile Include="Models\Achievement.cs" />
     <Compile Include="Models\AchRaretyStats.cs" />
-    <Compile Include="Models\StoreSettings.cs" />
     <Compile Include="Models\StarCraft2\BattleNetSc2Ach.cs" />
     <Compile Include="Models\StarCraft2\BattleNetSc2Profil.cs" />
     <Compile Include="Models\ExophaseSearchResult.cs" />
