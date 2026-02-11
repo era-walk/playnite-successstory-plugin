@@ -289,6 +289,7 @@
     </Compile>
     <Compile Include="Services\LZString.cs" />
     <Compile Include="Services\NDS.cs" />
+    <Compile Include="Services\SessionHistoryService.cs" />
     <Compile Include="Services\SuccessStoryDatabase.cs" />
     <Compile Include="Services\SuccessStorySearch.cs" />
     <Compile Include="Services\SuccessStoryStats.cs" />

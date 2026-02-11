@@ -81,9 +81,13 @@ namespace SuccessStory.Services
             }
         }
 
+        /// session history to track hours played at achievement unlock
+        internal SessionHistoryService SessionHistory { get; }
+
         public SuccessStoryDatabase(SuccessStorySettingsViewModel pluginSettings, string pluginUserDataPath) : base(pluginSettings, "SuccessStory", pluginUserDataPath)
         {
             TagBefore = "[SS]";
+            SessionHistory = new SessionHistoryService(pluginUserDataPath);
         }
 
 
@@ -326,7 +330,28 @@ namespace SuccessStory.Services
                 //Add(gameAchievements);
             }
 
+            if (gameAchievements != null)
+            {
+                EnrichAchievementsWithHoursAtUnlock(gameAchievements);
+            }
+
             return gameAchievements;
+        }
+
+        /// populates HoursAtUnlock on each achievement by cross-referencing unlock time with session history
+        internal void EnrichAchievementsWithHoursAtUnlock(GameAchievements ga)
+        {
+            if (ga?.Items == null || SessionHistory == null || !PluginSettings.Settings.EnableHoursAtUnlock) return;
+
+            foreach (var ach in ga.Items)
+            {
+                ach.HoursAtUnlock = null;
+                if (ach.DateWhenUnlocked.HasValue)
+                {
+                    var unlockUtc = ach.DateWhenUnlocked.Value.ToUniversalTime();
+                    ach.HoursAtUnlock = SessionHistory.GetHoursPlayedAt(unlockUtc, ga.Id);
+                }
+            }
         }
 
         /// <summary>
@@ -1018,6 +1043,7 @@ namespace SuccessStory.Services
 
         public override void ActionAfterRefresh(GameAchievements item)
         {
+            EnrichAchievementsWithHoursAtUnlock(item);
             Game game = API.Instance.Database.Games.Get(item.Id);
             // Add feature
             if ((item?.HasAchievements ?? false) && PluginSettings.Settings.AchievementFeature != null)

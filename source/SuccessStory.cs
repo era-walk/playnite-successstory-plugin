@@ -1,4 +1,4 @@
-﻿using CommonPlayniteShared.Common;
+using CommonPlayniteShared.Common;
 using CommonPluginsShared;
 using CommonPluginsShared.Controls;
 using CommonPluginsShared.Extensions;
@@ -1034,6 +1034,11 @@ namespace SuccessStory
         public override void OnGameStopped(OnGameStoppedEventArgs args)
         {
             TaskIsPaused = false;
+            if (PluginDatabase.PluginSettings.Settings.EnableHoursAtUnlock)
+            {
+                PluginDatabase.SessionHistory?.AddSession(args.Game, args.ElapsedSeconds);
+            }
+            PluginDatabase.SessionHistory?.PerformBackupIfDue();
             _ = PluginDatabase.RefreshData(args.Game);
         }
 
@@ -1044,6 +1049,7 @@ namespace SuccessStory
         // Add code to be executed when Playnite is initialized.
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
+            PluginDatabase.SessionHistory?.PerformBackupIfDue();
 			// StoreAPI Initialization
 			Task.Run(async () =>
 			{

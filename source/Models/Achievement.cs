@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -102,6 +102,34 @@ namespace SuccessStory.Models
         /// Gets or sets the gamerscore or points value of the achievement.
         /// </summary>
         public float GamerScore { get; set; } = 0;
+
+
+        /// hours played at achievement unlock. calculated by SessionHistoryService.GetHoursPlayedAt
+        [DontSerialize]
+        public double? HoursAtUnlock { get; set; }
+
+        /// <summary>
+        /// Gets formatted string for hours at unlock, e.g. "4.23 Hours Played" or "—" when null.
+        /// </summary>
+        [DontSerialize]
+        public string HoursAtUnlockFormatted => HoursAtUnlock.HasValue
+            ? string.Format(CultureInfo.CurrentCulture, "{0:N2} Hours Played", HoursAtUnlock.Value)
+            : "—";
+
+        /// <summary>
+        /// Gets date and hours for display: "11/02/2026 - 12:31 | 4.23 Hours Played" or just date when no hours.
+        /// </summary>
+        [DontSerialize]
+        public string DateAndHoursUnlockDisplay
+        {
+            get
+            {
+                if (DateWhenUnlocked == null) return string.Empty;
+                LocalDateTimeConverter converter = new LocalDateTimeConverter();
+                string dateStr = (string)converter.Convert(DateWhenUnlocked, null, null, CultureInfo.CurrentCulture);
+                return HoursAtUnlock.HasValue ? $"{dateStr} | {HoursAtUnlockFormatted}" : dateStr;
+            }
+        }
 
         /// <summary>
         /// Gets the icon path for the achievement's category.
@@ -277,6 +305,23 @@ namespace SuccessStory.Models
             }
         }
 
+        /// displays achievement name, date and hours played when available, otherwise just name and date
+        [DontSerialize]
+        public string NameWithDateAndHours
+        {
+            get
+            {
+                if (DateWhenUnlocked == null) return Name;
+                LocalDateTimeConverter converter = new LocalDateTimeConverter();
+                string dateStr = (string)converter.Convert(DateWhenUnlocked, null, null, CultureInfo.CurrentCulture);
+                if (HoursAtUnlock.HasValue)
+                {
+                    return $"{Name} | {dateStr} | {HoursAtUnlockFormatted}";
+                }
+                return $"{Name} | {dateStr}";
+            }
+        }
+
         /// <summary>
         /// Gets a compact tooltip UI element for the achievement (list view).
         /// </summary>
@@ -289,7 +334,7 @@ namespace SuccessStory.Models
 
                 TextBlockTrimmed textBlockTrimmed = new TextBlockTrimmed
                 {
-                    Text = NameWithDateUnlock,
+                    Text = NameWithDateAndHours,
                     FontWeight = FontWeights.Bold
                 };
                 if (!IsUnlock && IsHidden && !PluginDatabase.PluginSettings.Settings.ShowHiddenTitle)
@@ -335,7 +380,7 @@ namespace SuccessStory.Models
 
                 TextBlockTrimmed textBlockTrimmed = new TextBlockTrimmed
                 {
-                    Text = NameWithDateUnlock,
+                    Text = NameWithDateAndHours,
                     FontWeight = FontWeights.Bold
                 };
                 if (!IsUnlock && IsHidden && !PluginDatabase.PluginSettings.Settings.ShowHiddenTitle)

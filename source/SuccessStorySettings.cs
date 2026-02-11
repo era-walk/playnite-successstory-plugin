@@ -191,6 +191,11 @@ namespace SuccessStory
 
         public bool EnableRaretyIndicator { get; set; } = true;
         public bool DisplayRarityValue { get; set; } = true;
+
+        /// <summary>
+        /// Show "hours played at unlock" next to achievement dates. Disabling does not delete session data.
+        /// </summary>
+        public bool EnableHoursAtUnlock { get; set; } = true;
         public double RarityUncommon { get; set; } = 30;
         public SolidColorBrush RarityUncommonColor { get; set; } = Brushes.DarkGray;
         public double RarityRare { get; set; } = 10;

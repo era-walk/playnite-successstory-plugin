@@ -226,6 +226,9 @@ Especially useful for Xbox achievements with their larges images which are reduc
 
     <sys:String x:Key="LOCSuccessStoryRarety">Rarity</sys:String>
     <sys:String x:Key="LOCSuccessStoryDateUnlocked">Date unlocked</sys:String>
+    <sys:String x:Key="LOCSuccessStoryHoursAtUnlock">Hours at unlock</sys:String>
+    <sys:String x:Key="LOCSuccessStoryEnableHoursAtUnlock">Show hours played at achievement unlock</sys:String>
+    <sys:String x:Key="LOCSuccessStoryEnableHoursAtUnlockTooltip">Disabling stops recording and hides hours. Session data is never deleted. Backed up fortnightly.</sys:String>
 
     <!-- ListViewGames -->
 
