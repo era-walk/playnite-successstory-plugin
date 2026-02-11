@@ -1,4 +1,4 @@
-﻿using Playnite.SDK;
+using Playnite.SDK;
 using System.Collections.Generic;
 using SuccessStory.Models;
 using Playnite.SDK.Data;
@@ -173,6 +173,7 @@ namespace SuccessStory
         public List<RaConsoleAssociated> RaConsoleAssociateds { get; set; } = new List<RaConsoleAssociated>();
 
         public bool EnableLocal { get; set; } = false;
+        public bool EnableGameDriveAchievements { get; set; } = true;
         public List<Folder> LocalPath { get; set; } = new List<Folder>();
 
         public bool EnableManual { get; set; } = false;

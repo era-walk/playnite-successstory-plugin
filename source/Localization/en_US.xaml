@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <sys:String x:Key="LOCSuccessStoryProgress">Progress</sys:String>
@@ -95,6 +95,8 @@ Associate the platform in the plugin settings</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableWowAchievements">Enable World of Warcraft achievements</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableGw2Achievements">Enable Guild Wars 2 achievements</sys:String>
     <sys:String x:Key="LOCSuccessStoryEnableGameJoltAchievements">Enable Game Jolt achievements</sys:String>
+    <sys:String x:Key="LOCSuccessStoryEnableGameDriveAchievements">Enable GameDrive / Steam API emulator achievements</sys:String>
+    <sys:String x:Key="LOCSuccessStoryGameDrive">GameDrive</sys:String>
 
     <sys:String x:Key="LOCSuccessStorySteamNoApi">Disable API usage (Use this if you don't have an API key)</sys:String>
 	<sys:String x:Key="LOCSuccessStoryEnableRpcs3HomeFolder">Home user folder</sys:String>

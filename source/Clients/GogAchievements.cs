@@ -1,4 +1,4 @@
-﻿using Playnite.SDK.Models;
+using Playnite.SDK.Models;
 using CommonPluginsShared;
 using SuccessStory.Models;
 using System;
@@ -14,18 +14,20 @@ namespace SuccessStory.Clients
 {
     public class GogAchievements : GenericAchievements
     {
-        private GogApi GogApi => SuccessStory.GogApi;
+        // GogApi disabled - return null to avoid build errors
+        private GogApi GogApi => null;
 
 
         public GogAchievements() : base("GOG", CodeLang.GetGogLang(API.Instance.ApplicationSettings.Language))
         {
-            GogApi.SetLanguage(API.Instance.ApplicationSettings.Language);
+            if (GogApi != null) GogApi.SetLanguage(API.Instance.ApplicationSettings.Language);
         }
 
 
         public override GameAchievements GetAchievements(Game game)
         {
             GameAchievements gameAchievements = SuccessStory.PluginDatabase.GetDefault(game);
+            if (GogApi == null) return gameAchievements; // GogApi disabled
             List<Achievement> AllAchievements = new List<Achievement>();
 
             if (IsConnected())
@@ -118,6 +120,7 @@ namespace SuccessStory.Clients
 
         public override bool IsConnected()
         {
+            if (GogApi == null) return false;
             if (CachedIsConnectedResult == null)
             {
                 CachedIsConnectedResult = GogApi.IsUserLoggedIn;
@@ -139,13 +142,13 @@ namespace SuccessStory.Clients
         public override void ResetCachedConfigurationValidationResult()
         {
             CachedConfigurationValidationResult = null;
-            GogApi.ResetIsUserLoggedIn();
+            if (GogApi != null) GogApi.ResetIsUserLoggedIn();
         }
 
         public override void ResetCachedIsConnectedResult()
         {
             CachedIsConnectedResult = null;
-            GogApi.ResetIsUserLoggedIn();
+            if (GogApi != null) GogApi.ResetIsUserLoggedIn();
         }
         #endregion
     }

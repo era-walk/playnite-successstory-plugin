@@ -1,4 +1,4 @@
-﻿using Playnite.SDK;
+using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using CommonPluginsShared;
@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using static CommonPluginsShared.PlayniteTools;
 using CommonPluginsShared.Extensions;
 using System.Threading.Tasks;
+using System.IO;
 using FuzzySharp;
 
 namespace SuccessStory.Services
@@ -72,6 +73,7 @@ namespace SuccessStory.Services
                         TryAddProvider(AchievementSource.ZenlessZoneZero, () => new ZenlessZoneZeroAchievements());
                         TryAddProvider(AchievementSource.GuildWars2, () => new GuildWars2Achievements());
                         TryAddProvider(AchievementSource.GameJolt, () => new GameJoltAchievements());
+                        TryAddProvider(AchievementSource.GameDrive, () => new GameDriveAchievements());
                         TryAddProvider(AchievementSource.Local, () => SteamAchievements.GetLocalSteamAchievementsProvider());
                     }
                 }
@@ -472,6 +474,7 @@ namespace SuccessStory.Services
         {
             None,
             Local,
+            GameDrive,
             Playstation,
             Steam,
             GOG,
@@ -725,8 +728,65 @@ namespace SuccessStory.Services
                 return source;
             }
 
+            if (settings.EnableGameDriveAchievements && GameHasGameDriveLayout(game))
+            {
+                return AchievementSource.GameDrive;
+            }
+
             //any game can still get local achievements when that's enabled
             return settings.EnableLocal ? AchievementSource.Local : AchievementSource.None;
+        }
+
+        /// returns the install root path when game has GameDrive file structure - _Saved Games + steam_settings\achievements.json
+        /// otherwise null
+        public static string GetGameDriveInstallRoot(Game game)
+        {
+            if (game == null) return null;
+
+            string candidate = null;
+            if (!string.IsNullOrEmpty(game.InstallDirectory) && Directory.Exists(game.InstallDirectory))
+            {
+                candidate = game.InstallDirectory;
+            }
+            else
+            {
+                var action = game.GameActions?.FirstOrDefault(a => a.Type == GameActionType.File && !string.IsNullOrEmpty(a.Path));
+                if (action != null)
+                {
+                    try
+                    {
+                        string expandedPath = API.Instance.ExpandGameVariables(game, action.Path);
+                        if (!string.IsNullOrEmpty(expandedPath))
+                        {
+                            string dir = Path.GetDirectoryName(expandedPath);
+                            if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                                candidate = dir;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Common.LogError(ex, false, $"GetGameDriveInstallRoot: ExpandGameVariables for {game.Name}", true, "SuccessStory");
+                    }
+                }
+            }
+
+            while (!string.IsNullOrEmpty(candidate))
+            {
+                string savedGames = Path.Combine(candidate, "_Saved Games");
+                string schemaFile = Path.Combine(candidate, "steam_settings", "achievements.json");
+                if (Directory.Exists(savedGames) && File.Exists(schemaFile))
+                    return candidate;
+                string parent = Path.GetDirectoryName(candidate);
+                if (string.IsNullOrEmpty(parent) || parent == candidate) break;
+                candidate = parent;
+            }
+
+            return null;
+        }
+
+        private static bool GameHasGameDriveLayout(Game game)
+        {
+            return GetGameDriveInstallRoot(game) != null;
         }
 
 
