@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace SuccessStory.Clients
 {
-    public class GameDriveAchievements : GenericAchievements
+    public class GoldbergAchievements : GenericAchievements
     {
-        private sealed class GameDriveSchemaItem
+        private sealed class GoldbergSchemaItem
         {
             public string name { get; set; }
             public string display_name { get; set; }
@@ -22,13 +22,13 @@ namespace SuccessStory.Clients
             public string icon_gray { get; set; }
         }
 
-        private sealed class GameDriveProgressEntry
+        private sealed class GoldbergProgressEntry
         {
             public bool earned { get; set; }
             public long earned_time { get; set; }
         }
 
-        public GameDriveAchievements() : base("GameDrive")
+        public GoldbergAchievements() : base("Goldberg")
         {
         }
 
@@ -37,36 +37,41 @@ namespace SuccessStory.Clients
             GameAchievements result = PluginDatabase.GetDefault(game);
             result.IsManual = false;
 
-            string root = SuccessStoryDatabase.GetGameDriveInstallRoot(game);
+            string root = SuccessStoryDatabase.GetGoldbergInstallRoot(game);
+            string steamSettingsRoot = null;
             if (string.IsNullOrEmpty(root))
             {
-                Logger.Warn($"GameDrive: No install root for {game.Name}");
+                Logger.Warn($"Goldberg: No install root for {game.Name}");
                 return result;
+            }
+            else
+            {
+                steamSettingsRoot = Path.Combine(root, "steam_settings");
             }
 
             string appId = ResolveAppId(root);
             if (string.IsNullOrEmpty(appId))
             {
-                Logger.Warn($"GameDrive: No AppId for {game.Name} at {root}");
+                Logger.Warn($"Goldberg: No AppId for {game.Name} at {root}");
                 return result;
             }
 
-            List<GameDriveSchemaItem> schema = LoadSchema(root);
+            List<GoldbergSchemaItem> schema = LoadSchema(root);
             if (schema == null || schema.Count == 0)
             {
-                Logger.Warn($"GameDrive: No schema for {game.Name} at {root}");
+                Logger.Warn($"Goldberg: No schema for {game.Name} at {root}");
                 return result;
             }
 
-            Dictionary<string, GameDriveProgressEntry> progress = LoadProgress(root, appId);
+            Dictionary<string, GoldbergProgressEntry> progress = LoadProgress(root, appId);
             var items = new List<Achievement>();
 
-            foreach (GameDriveSchemaItem s in schema)
+            foreach (GoldbergSchemaItem s in schema)
             {
                 string id = s?.name;
                 if (string.IsNullOrEmpty(id)) continue;
 
-                progress.TryGetValue(id, out GameDriveProgressEntry p);
+                progress.TryGetValue(id, out GoldbergProgressEntry p);
                 bool earned = p?.earned == true && p.earned_time > 0;
                 DateTime? dateUnlocked = null;
                 if (earned && p.earned_time > 0)
@@ -74,14 +79,17 @@ namespace SuccessStory.Clients
                     dateUnlocked = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(p.earned_time);
                 }
 
+                string unlockedIcon = ResolveIconPath(steamSettingsRoot, s.icon);
+                string lockedIcon = ResolveIconPath(steamSettingsRoot, s.icon_gray ?? s.icon);
+
                 items.Add(new Achievement
                 {
                     ApiName = id,
                     Name = s.display_name ?? id,
                     Description = s.description ?? string.Empty,
                     IsHidden = s.hidden,
-                    UrlUnlocked = s.icon ?? string.Empty,
-                    UrlLocked = s.icon_gray ?? s.icon ?? string.Empty,
+                    UrlUnlocked = unlockedIcon ?? string.Empty,
+                    UrlLocked = lockedIcon ?? unlockedIcon ?? string.Empty,
                     DateUnlocked = dateUnlocked
                 });
             }
@@ -94,6 +102,35 @@ namespace SuccessStory.Clients
         public override bool ValidateConfiguration() => true;
 
         public override bool EnabledInSettings() => true;
+
+        private static string ResolveIconPath(string steamSettingsRoot, string icon)
+        {
+            if (string.IsNullOrEmpty(icon))
+            {
+                return string.Empty;
+            }
+
+            // already absolute path - already handled by Playnite
+            if (Path.IsPathRooted(icon)
+                || icon.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                || icon.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            {
+                return icon;
+            }
+
+            // goldberg schema uses paths like "images/<hash>.jpg" relative to steam_settings
+            if (!string.IsNullOrEmpty(steamSettingsRoot))
+            {
+                string candidate = Path.Combine(steamSettingsRoot, icon.Replace('/', Path.DirectorySeparatorChar));
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            // Fallback to original string if resolution fails.
+            return icon;
+        }
 
         private static string ResolveAppId(string root)
         {
@@ -108,7 +145,7 @@ namespace SuccessStory.Clients
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warn($"GameDrive: Failed to read steam_appid.txt: {ex.Message}");
+                    Logger.Warn($"Goldberg: Failed to read steam_appid.txt: {ex.Message}");
                 }
             }
 
@@ -126,13 +163,13 @@ namespace SuccessStory.Clients
             }
             catch (Exception ex)
             {
-                Logger.Warn($"GameDrive: Failed to enumerate _Saved Games: {ex.Message}");
+                Logger.Warn($"Goldberg: Failed to enumerate _Saved Games: {ex.Message}");
             }
 
             return null;
         }
 
-        private static List<GameDriveSchemaItem> LoadSchema(string root)
+        private static List<GoldbergSchemaItem> LoadSchema(string root)
         {
             string path = Path.Combine(root, "steam_settings", "achievements.json");
             if (!File.Exists(path)) return null;
@@ -140,30 +177,30 @@ namespace SuccessStory.Clients
             try
             {
                 string json = File.ReadAllText(path);
-                return Serialization.FromJson<List<GameDriveSchemaItem>>(json);
+                return Serialization.FromJson<List<GoldbergSchemaItem>>(json);
             }
             catch (Exception ex)
             {
-                Logger.Warn($"GameDrive: Failed to load schema from {path}: {ex.Message}");
+                Logger.Warn($"Goldberg: Failed to load schema from {path}: {ex.Message}");
                 return null;
             }
         }
 
-        private static Dictionary<string, GameDriveProgressEntry> LoadProgress(string root, string appId)
+        private static Dictionary<string, GoldbergProgressEntry> LoadProgress(string root, string appId)
         {
             string path = Path.Combine(root, "_Saved Games", appId, "achievements.json");
-            if (!File.Exists(path)) return new Dictionary<string, GameDriveProgressEntry>();
+            if (!File.Exists(path)) return new Dictionary<string, GoldbergProgressEntry>();
 
             try
             {
                 string json = File.ReadAllText(path);
-                var dict = Serialization.FromJson<Dictionary<string, GameDriveProgressEntry>>(json);
-                return dict ?? new Dictionary<string, GameDriveProgressEntry>();
+                var dict = Serialization.FromJson<Dictionary<string, GoldbergProgressEntry>>(json);
+                return dict ?? new Dictionary<string, GoldbergProgressEntry>>();
             }
             catch (Exception ex)
             {
-                Logger.Warn($"GameDrive: Failed to load progress from {path}: {ex.Message}");
-                return new Dictionary<string, GameDriveProgressEntry>();
+                Logger.Warn($"Goldberg: Failed to load progress from {path}: {ex.Message}");
+                return new Dictionary<string, GoldbergProgressEntry>();
             }
         }
     }

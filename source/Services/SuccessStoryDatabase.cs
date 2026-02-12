@@ -73,7 +73,7 @@ namespace SuccessStory.Services
                         TryAddProvider(AchievementSource.ZenlessZoneZero, () => new ZenlessZoneZeroAchievements());
                         TryAddProvider(AchievementSource.GuildWars2, () => new GuildWars2Achievements());
                         TryAddProvider(AchievementSource.GameJolt, () => new GameJoltAchievements());
-                        TryAddProvider(AchievementSource.GameDrive, () => new GameDriveAchievements());
+                        TryAddProvider(AchievementSource.Goldberg, () => new GoldbergAchievements());
                         TryAddProvider(AchievementSource.Local, () => SteamAchievements.GetLocalSteamAchievementsProvider());
                     }
                 }
@@ -499,7 +499,7 @@ namespace SuccessStory.Services
         {
             None,
             Local,
-            GameDrive,
+            Goldberg,
             Playstation,
             Steam,
             GOG,
@@ -753,18 +753,18 @@ namespace SuccessStory.Services
                 return source;
             }
 
-            if (settings.EnableGameDriveAchievements && GameHasGameDriveLayout(game))
+            if (settings.EnableGoldbergAchievements && GameHasGoldbergLayout(game))
             {
-                return AchievementSource.GameDrive;
+                return AchievementSource.Goldberg;
             }
 
             //any game can still get local achievements when that's enabled
             return settings.EnableLocal ? AchievementSource.Local : AchievementSource.None;
         }
 
-        /// returns the install root path when game has GameDrive file structure - _Saved Games + steam_settings\achievements.json
+        /// returns the install root path when game has Goldberg / Steam emulator file structure - _Saved Games + steam_settings\achievements.json
         /// otherwise null
-        public static string GetGameDriveInstallRoot(Game game)
+        public static string GetGoldbergInstallRoot(Game game)
         {
             if (game == null) return null;
 
@@ -790,7 +790,7 @@ namespace SuccessStory.Services
                     }
                     catch (Exception ex)
                     {
-                        Common.LogError(ex, false, $"GetGameDriveInstallRoot: ExpandGameVariables for {game.Name}", true, "SuccessStory");
+                        Common.LogError(ex, false, $"GetGoldbergInstallRoot: ExpandGameVariables for {game.Name}", true, "SuccessStory");
                     }
                 }
             }
@@ -809,9 +809,9 @@ namespace SuccessStory.Services
             return null;
         }
 
-        private static bool GameHasGameDriveLayout(Game game)
+        private static bool GameHasGoldbergLayout(Game game)
         {
-            return GetGameDriveInstallRoot(game) != null;
+            return GetGoldbergInstallRoot(game) != null;
         }
 
 

@@ -173,7 +173,7 @@ namespace SuccessStory
         public List<RaConsoleAssociated> RaConsoleAssociateds { get; set; } = new List<RaConsoleAssociated>();
 
         public bool EnableLocal { get; set; } = false;
-        public bool EnableGameDriveAchievements { get; set; } = true;
+        public bool EnableGoldbergAchievements { get; set; } = true;
         public List<Folder> LocalPath { get; set; } = new List<Folder>();
 
         public bool EnableManual { get; set; } = false;

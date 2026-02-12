@@ -905,8 +905,8 @@
                                 </Style>
                             </Expander.Style>
                             <Expander.Header>
-                                <CheckBox IsChecked="{Binding Settings.EnableGameDriveAchievements}" VerticalAlignment="Center">
-                                    <Label Content="{DynamicResource LOCSuccessStoryEnableGameDriveAchievements}" />
+                                <CheckBox IsChecked="{Binding Settings.EnableGoldbergAchievements}" VerticalAlignment="Center">
+                                    <Label Content="{DynamicResource LOCSuccessStoryEnableGoldbergAchievements}" />
                                 </CheckBox>
                             </Expander.Header>
                         </Expander>
