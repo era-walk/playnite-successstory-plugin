@@ -108,17 +108,13 @@ namespace SuccessStory.Models
         [DontSerialize]
         public double? HoursAtUnlock { get; set; }
 
-        /// <summary>
-        /// Gets formatted string for hours at unlock, e.g. "4.23 Hours Played" or "—" when null.
-        /// </summary>
+        /// gets formatted string for hours at unlock, e.g. "4.23 Hours Played" or "—" when null
         [DontSerialize]
         public string HoursAtUnlockFormatted => HoursAtUnlock.HasValue
             ? string.Format(CultureInfo.CurrentCulture, "{0:N2} Hours Played", HoursAtUnlock.Value)
             : "—";
 
-        /// <summary>
-        /// Gets date and hours for display: "11/02/2026 - 12:31 | 4.23 Hours Played" or just date when no hours.
-        /// </summary>
+        /// gets date and hours for display e.g. "11/02/2026 - 12:31 | 4.23 Hours Played"
         [DontSerialize]
         public string DateAndHoursUnlockDisplay
         {

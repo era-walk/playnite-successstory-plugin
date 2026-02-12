@@ -93,6 +93,7 @@ namespace SuccessStory.Services
 
         /// <summary>
         /// Records a play session when the game stops.
+        /// On first session for a game, backfills pre-existing Playnite playtime so hours-at-unlock is correct.
         /// </summary>
         public void AddSession(Game game, ulong elapsedSeconds)
         {
@@ -101,13 +102,6 @@ namespace SuccessStory.Services
             DateTime endUtc = DateTime.UtcNow;
             DateTime startUtc = endUtc.AddSeconds(-(double)elapsedSeconds);
 
-            var record = new SessionRecord
-            {
-                StartUtc = startUtc,
-                EndUtc = endUtc,
-                Seconds = elapsedSeconds
-            };
-
             var data = Load();
             string key = game.Id.ToString();
             if (!data.TryGetValue(key, out List<SessionRecord> list))
@@ -115,7 +109,30 @@ namespace SuccessStory.Services
                 list = new List<SessionRecord>();
                 data[key] = list;
             }
-            list.Add(record);
+
+            if (list.Count == 0 && game.Playtime > elapsedSeconds)
+            {
+                long preExistingSeconds = (long)game.Playtime - (long)elapsedSeconds;
+                if (preExistingSeconds > 0)
+                {
+                    DateTime syntheticEnd = startUtc;
+                    DateTime syntheticStart = syntheticEnd.AddSeconds(-preExistingSeconds);
+                    list.Add(new SessionRecord
+                    {
+                        StartUtc = syntheticStart,
+                        EndUtc = syntheticEnd,
+                        Seconds = (ulong)preExistingSeconds
+                    });
+                    _logger?.Info($"SessionHistoryService: Backfilled {preExistingSeconds / 3600.0:F1}h pre-existing playtime for {game.Name}");
+                }
+            }
+
+            list.Add(new SessionRecord
+            {
+                StartUtc = startUtc,
+                EndUtc = endUtc,
+                Seconds = elapsedSeconds
+            });
             Save();
         }
 
